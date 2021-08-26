@@ -19,21 +19,30 @@ export class AppComponent {
 		this.files.push(...event.addedFiles);
 
 		console.log("name ", this.files[0].name);
-
-		// this.http.post<any>('http://equal.local/?do=model_create&entity=core\\Image&fields[name]=' + this.files[0].name + '&fields[type]=' + this.files[0].type, { headers }).subscribe(data => {
-		// 	this.files[0] = data;
-		// 	console.log("hi");
-		// })
-
 		console.log("data", this.files[0]);
 
-		
 
+		console.log("data", this.files);
+
+
+
+		let blob = new Blob([this.files[0]], { type: this.files[0].type });
+		console.log('Blob - ', blob);
+
+		var reader = new FileReader();
+		reader.readAsDataURL(blob);
+		reader.onloadend = function () {
+			var base64String = reader.result;
+			console.log('Base64 String - ', base64String);
+		}
+
+		console.log("new base64 _", reader);
+		
 		try {
 			const response = await this.api.create("core\\Image", {
 				name: this.files[0].name,
 				type: this.files[0].type,
-				data: this.files
+				data: reader.result
 			})
 
 			console.log("response", response);
@@ -41,19 +50,6 @@ export class AppComponent {
 		catch (err) {
 			console.log(err);
 		}
-
-
-
-		// const data= {
-		// 	"entity": 'core\\Image',
-		// 	"fields[name]": this.files[0].name
-		// }
-
-
-
-		// this.http.post<any>('http://equal.local/index.php?do=qinoa_model_create', data).subscribe(data => {
-		// 	console.log("data ", data);
-		// });
 	}
 
 

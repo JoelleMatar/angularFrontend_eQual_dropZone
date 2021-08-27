@@ -52,7 +52,7 @@ export class ApiService {
     .toPromise();
   }
 
-  public remove(entity:string, ids:any[], permanent:boolean=false) {
+  public remove(entity:string, ids:string, permanent:boolean=false) {
     return this.http.delete<any>(environment.backend_url+'/?do=model_delete', {body: {
         entity: entity,
         ids: ids,

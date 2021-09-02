@@ -11,6 +11,10 @@ import { AuthInterceptorService } from 'src/http.interceptor.service';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from 'src/api/api.service';
 import { AuthService } from 'src/auth/auth.service';
+import { FormsModule } from '@angular/forms';
+// import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+// import { NzSpinModule } from 'ng-zorro-antd/spin';
+// import { DemoNgZorroAntdModule } from './ng-zoro-antd.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +26,10 @@ import { AuthService } from 'src/auth/auth.service';
     NgxDropzoneModule,
     MatTableModule,
     HttpClientModule,
+    FormsModule
+    // MatProgressSpinnerModule,
+    // // NzSpinModule,
+    // DemoNgZorroAntdModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }, 

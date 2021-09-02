@@ -4,91 +4,142 @@ import { ApiService } from 'src/api/api.service';
 
 
 @Component({
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-	title = 'angular-dropzone';
+    title = 'angular-dropzone';
 
-	columns = ["ID", "Image Name"];
-	index = ["id", "name"];
+    columns = ["ID", "Image Name"];
+    index = ["id", "name"];
 
-	files: File[] = [];
+    files: any[] = [];
 
-	constructor(private http: HttpClient, private api: ApiService) { }
+    loading = false;
+    removeFromDZ = false;
+    renameFile = false;
+    
+    name: string = '';
 
-	ngOnInit() {
-		console.log("hi");
-		this.onFetch();
-	}
+    chosenRow: any;
 
-	async onSelect(event: { addedFiles: any; }) {
-		console.log("event", event);
-		this.files.push(...event.addedFiles);
+    
 
-		console.log("name ", this.files[0].name);
-		console.log("data", this.files[0]);
+    constructor(private api: ApiService) { }
 
+    ngOnInit() {
+        this.load();
+    }
 
-		console.log("data", this.files);
+    public async onSelect(event: { addedFiles: any; }) {
+        console.log("event", event);
 
+        let file = event.addedFiles[0];
+        this.loading = true;
 
+        const data = await this.readFile(file);
 
-		let blob = new Blob([this.files[0]], { type: this.files[0].type });
-		console.log('Blob - ', blob);
+        try {
+            const response = await this.api.create("core\\Image", {
+                name: file.name,
+                type: file.type,
+                data: data
+            });
 
-		var reader = new FileReader();
-		reader.readAsDataURL(blob);
-		reader.onloadend = function () {
-			var base64String = reader.result;
-			console.log('Base64 String - ', base64String);
-		}
+            file.id = response.id;
 
-		console.log("new base64 _", reader);
+            this.files.push(file);
+            this.onRemove(file);
+            this.load();
 
-		try {
-			const response = await this.api.create("core\\Image", {
-				name: this.files[0].name,
-				type: this.files[0].type,
-				data: reader.result
-			})
-			
-			console.log("response", response);
-			
-			this.onFetch();
-		}
-		catch (err) {
-			console.log(err);
-		}
-	}
+            if (response) {
+                this.loading = false;
+                this.removeFromDZ = true;
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
 
 
-	onRemove(event: File) {
-		console.log(event);
-		this.files.splice(this.files.indexOf(event), 1);
-	}
+    onRemove(file: File) {
+        this.files.splice(this.files.indexOf(file), 1);
+    }
 
-	async onFetch() {
-		try {
-			this.files = await this.api.fetch("/images");
+    async load() {
+        try {
+            this.files = await this.api.fetch("/images");
 
-			console.log("fetch response", this.files);
-		}
-		catch (err) {
-			console.log("err fetch", err);
-		}
-	}
+            console.log("fetch response", this.files);
+        }
+        catch (err) {
+            console.log("err fetch", err);
+        }
+    }
 
-	async onDelete(name: string) {
-		try {
-			console.log("hii");
-			this.files = await this.api.remove("/image", name, true);
+    async onDelete(file: any) {
+        try {
+            // permanent deletion
+            await this.api.remove("core\\Image", [file.id], true);
 
-			console.log("delete response", this.files);
-		}
-		catch (err) {
-			console.log("err delete", err);
-		}
-	}
+            let index = this.files.findIndex((f: any) => f.id == file.id);
+            this.files.splice(index, 1);
+        }
+        catch (err) {
+            console.log("err delete", err);
+        }
+    }
+
+
+    private readFile(file: any) {
+        return new Promise((resolve, reject) => {
+            var reader = new FileReader();
+            let blob = new Blob([file], { type: file.type });
+            reader.onload = () => {
+                console.log(reader.result)
+                resolve(reader.result);
+            }
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    addInput(file: any) {
+        console.log("file", file);
+        this.renameFile = true;
+
+        this.chosenRow = file;
+    }
+
+    async rename(file: any) {
+        this.renameFile = true;
+        console.log("name" , name);
+
+        console.log("fileee", file);
+        try {
+            // 
+
+            // if (this.renameFile == true) {
+
+            
+                const response = await this.api.update("core\\Image", [file.id], { name: this.name }, true);
+
+                if (response) {
+                    this.load();
+                    this.renameFile = false;
+                    console.log("update success");
+                    
+                }
+            // }
+
+
+
+        }
+        catch (err) {
+            console.log("err update", err);
+        }
+
+    }
 }

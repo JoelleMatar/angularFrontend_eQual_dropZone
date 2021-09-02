@@ -19,12 +19,12 @@ export class AppComponent {
     loading = false;
     removeFromDZ = false;
     renameFile = false;
-    
+
     name: string = '';
 
     chosenRow: any;
 
-    
+
 
     constructor(private api: ApiService) { }
 
@@ -33,34 +33,37 @@ export class AppComponent {
     }
 
     public async onSelect(event: { addedFiles: any; }) {
-        console.log("event", event);
+        console.log("event", event.addedFiles);
 
-        let file = event.addedFiles[0];
+        let file = event.addedFiles;
         this.loading = true;
 
-        const data = await this.readFile(file);
 
-        try {
-            const response = await this.api.create("core\\Image", {
-                name: file.name,
-                type: file.type,
-                data: data
-            });
 
-            file.id = response.id;
+        for (var i = 0; i < file.length; i++) {
+            const data = await this.readFile(file[i]);
+            try {
+                const response = await this.api.create("core\\Image", {
+                    name: file[i].name,
+                    type: file[i].type,
+                    data: data
+                });
 
-            this.files.push(file);
-            this.onRemove(file);
-            this.load();
+                file.id = response.id;
 
-            if (response) {
-                this.loading = false;
-                this.removeFromDZ = true;
+                this.files.push(file[i]);
+                // this.onRemove(file[i]);
+                this.load();
+
+                // if (response) {
+                    
+                //     this.removeFromDZ = true;
+                // }
             }
-        }
-        catch (err) {
-            console.log(err);
-        }
+            catch (err) {
+                console.log(err);
+            }
+        }this.loading = false;
     }
 
 
@@ -115,7 +118,7 @@ export class AppComponent {
 
     async rename(file: any) {
         this.renameFile = true;
-        console.log("name" , name);
+        console.log("name", name);
 
         console.log("fileee", file);
         try {
@@ -123,15 +126,15 @@ export class AppComponent {
 
             // if (this.renameFile == true) {
 
-            
-                const response = await this.api.update("core\\Image", [file.id], { name: this.name }, true);
 
-                if (response) {
-                    this.load();
-                    this.renameFile = false;
-                    console.log("update success");
-                    
-                }
+            const response = await this.api.update("core\\Image", [file.id], { name: this.name }, true);
+
+            if (response) {
+                this.load();
+                this.renameFile = false;
+                console.log("update success");
+
+            }
             // }
 
 

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,9 +12,8 @@ import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common
 import { ApiService } from 'src/api/api.service';
 import { AuthService } from 'src/auth/auth.service';
 import { FormsModule } from '@angular/forms';
-// import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-// import { NzSpinModule } from 'ng-zorro-antd/spin';
-// import { DemoNgZorroAntdModule } from './ng-zoro-antd.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularMaterialModule } from 'src/angular-material.module';
 
 @NgModule({
   declarations: [
@@ -26,16 +25,16 @@ import { FormsModule } from '@angular/forms';
     NgxDropzoneModule,
     MatTableModule,
     HttpClientModule,
-    FormsModule
-    // MatProgressSpinnerModule,
-    // // NzSpinModule,
-    // DemoNgZorroAntdModule
+    FormsModule,
+    BrowserAnimationsModule,
+    AngularMaterialModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }, 
     ApiService,
     AuthService
   ],
-  bootstrap: [AppComponent]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

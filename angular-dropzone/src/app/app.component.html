@@ -1,32 +1,35 @@
-<table class="mat-elevation-z8" id="files" style="margin: auto; margin-bottom: 20px;">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<div mat-app-background>
+  <table class="mat-elevation-z8" id="files" style="margin: auto; margin-bottom: 20px;" color="primary">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  
-  <tbody>
-    <tr>
-      <th>ID</th>
-      <th>Image Name</th>
-      <th>Delete</th>
-    </tr>
-    <tr *ngFor="let file of files ;let i = index">
-      <td>{{i}}</td>
-      <td (dblclick)="addInput(i)">{{file.name}}</td>
-      <td *ngIf="renameFile && chosenRow===i"><input name="name" [(ngModel)]="name" (keypress)="$event.keyCode == 13 ? rename(file) : null" ></td>
-      <td>
-        <span class="glyphicon glyphicon-trash" style="color: red;" (click)="onDelete(file)"></span>
-      </td>
-    </tr>
-  </tbody>
-</table>
 
-<p *ngIf="loading" style="text-align: center;">Loading...</p>
+    <tbody>
+      <tr>
+        <th>ID</th>
+        <th>Image Name</th>
+        <th>Delete</th>
+      </tr>
+      <tr *ngFor="let file of files ;let i = index">
+        <td>{{i}}</td>
+        <td (dblclick)="addInput(i)" (click)="displayImg(file)">{{file.name}}</td>
+        <td *ngIf="renameFile && chosenRow===i"><input name="name" [(ngModel)]="name"
+            (keypress)="$event.keyCode == 13 ? rename(file) : null"></td>
+        <td>
+          <span class="glyphicon glyphicon-trash" style="color: red;" (click)="onDelete(file)"></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-<div style="width: 70%; margin: auto;">
-  <ngx-dropzone (change)="onSelect($event)">
-    <ngx-dropzone-label>Choose or Drop your files here!</ngx-dropzone-label>
-    <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
-      <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
-    </ngx-dropzone-preview>
-  </ngx-dropzone>
+  <p *ngIf="loading" style="text-align: center;">Loading...</p>
+
+  <div style="width: 70%; margin: auto;" color="accent">
+    <ngx-dropzone (change)="onSelect($event)">
+      <ngx-dropzone-label>Choose or Drop your files here!</ngx-dropzone-label>
+      <ngx-dropzone-preview *ngFor="let f of docs" [removable]="true" (removed)="onRemove(f)">
+        <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+      </ngx-dropzone-preview>
+    </ngx-dropzone>
+  </div>
 </div>

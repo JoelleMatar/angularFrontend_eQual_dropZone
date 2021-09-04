@@ -14,7 +14,8 @@ export class AppComponent {
     columns = ["ID", "Image Name"];
     index = ["id", "name"];
 
-    files: any[] = [];
+    docs: any[] = [];
+    files: any[] = this.docs;
 
     loading = false;
     removeFromDZ = false;
@@ -52,18 +53,15 @@ export class AppComponent {
                 file.id = response.id;
 
                 this.files.push(file[i]);
-                // this.onRemove(file[i]);
+                this.onRemove(file[i]);
                 this.load();
 
-                // if (response) {
-                    
-                //     this.removeFromDZ = true;
-                // }
             }
             catch (err) {
                 console.log(err);
             }
-        }this.loading = false;
+        }
+        this.loading = false;
     }
 
 
@@ -122,11 +120,6 @@ export class AppComponent {
 
         console.log("fileee", file);
         try {
-            // 
-
-            // if (this.renameFile == true) {
-
-
             const response = await this.api.update("core\\Image", [file.id], { name: this.name }, true);
 
             if (response) {
@@ -135,14 +128,30 @@ export class AppComponent {
                 console.log("update success");
 
             }
-            // }
-
-
-
         }
         catch (err) {
             console.log("err update", err);
         }
 
+    }
+
+    async displayImg(file: any) {
+        console.log("file hash", file.hash);
+
+        const data = await this.readFile(file);
+
+        console.log("data file",data);
+        try {
+            const response = await this.api.readDocument("core\\Image", [file.id], [file] );
+
+            if (response) {
+                window.open("https://material.angular.io/components/table/overview");
+                console.log("display img success");
+
+            }
+        }
+        catch (err) {
+            console.log("err display img", err);
+        }
     }
 }

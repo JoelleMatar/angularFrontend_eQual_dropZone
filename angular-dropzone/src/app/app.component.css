@@ -23,3 +23,9 @@
     /* background-color: #4c93af;
     color: white; */
   }
+
+  table {
+    width: 70%;
+    margin: auto;
+    margin-bottom: 20px;
+  }

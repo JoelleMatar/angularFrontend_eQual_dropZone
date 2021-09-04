@@ -1,5 +1,8 @@
 import { HttpClient } from '@angular/common/http';
+import { ViewChild } from '@angular/core';
 import { Component } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { ApiService } from 'src/api/api.service';
 
 
@@ -11,8 +14,10 @@ import { ApiService } from 'src/api/api.service';
 export class AppComponent {
     title = 'angular-dropzone';
 
-    columns = ["ID", "Image Name"];
-    index = ["id", "name"];
+    columns = ["ID", "Image Name", "viewImg", "delete"];
+    index = ["id", "name", "rename", "viewImg", "delete"];
+
+    @ViewChild(MatPaginator) paginator= MatPaginator;
 
     docs: any[] = [];
     files: any[] = this.docs;
@@ -25,9 +30,11 @@ export class AppComponent {
 
     chosenRow: any;
 
+    dataSource: any[] = [];
 
-
-    constructor(private api: ApiService) { }
+    constructor(private api: ApiService) {
+        
+     }
 
     ngOnInit() {
         this.load();
@@ -73,6 +80,8 @@ export class AppComponent {
         try {
             this.files = await this.api.fetch("/images", {fields:['id', 'name', 'hash']});
 
+            this.dataSource = this.files;
+            
             console.log("fetch response", this.files);
         }
         catch (err) {
@@ -87,6 +96,8 @@ export class AppComponent {
 
             let index = this.files.findIndex((f: any) => f.id == file.id);
             this.files.splice(index, 1);
+
+            this.load();
         }
         catch (err) {
             console.log("err delete", err);

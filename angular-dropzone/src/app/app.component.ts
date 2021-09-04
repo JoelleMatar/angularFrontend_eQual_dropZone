@@ -71,7 +71,7 @@ export class AppComponent {
 
     async load() {
         try {
-            this.files = await this.api.fetch("/images");
+            this.files = await this.api.fetch("/images", {fields:['id', 'name', 'hash']});
 
             console.log("fetch response", this.files);
         }
@@ -133,25 +133,5 @@ export class AppComponent {
             console.log("err update", err);
         }
 
-    }
-
-    async displayImg(file: any) {
-        console.log("file hash", file.hash);
-
-        const data = await this.readFile(file);
-
-        console.log("data file",data);
-        try {
-            const response = await this.api.readDocument("core\\Image", [file.id], [file] );
-
-            if (response) {
-                window.open("https://material.angular.io/components/table/overview");
-                console.log("display img success");
-
-            }
-        }
-        catch (err) {
-            console.log("err display img", err);
-        }
     }
 }

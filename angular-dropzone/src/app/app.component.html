@@ -5,16 +5,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <tbody>
-      <tr>
+      <tr color="accent">
         <th>ID</th>
         <th>Image Name</th>
+        <th>Image Link</th>
         <th>Delete</th>
       </tr>
       <tr *ngFor="let file of files ;let i = index">
         <td>{{i}}</td>
-        <td (dblclick)="addInput(i)" (click)="displayImg(file)">{{file.name}}</td>
+        <td (dblclick)="addInput(i)">{{file.name}}</td>
         <td *ngIf="renameFile && chosenRow===i"><input name="name" [(ngModel)]="name"
-            (keypress)="$event.keyCode == 13 ? rename(file) : null"></td>
+            (keypress)="$event.keyCode == 13 ? rename(file) : null">
+        </td>
+        <td><a href="http://equal.local/?get=documents_document&hash={{file.hash}}">View Image</a></td>
         <td>
           <span class="glyphicon glyphicon-trash" style="color: red;" (click)="onDelete(file)"></span>
         </td>
@@ -25,7 +28,7 @@
   <p *ngIf="loading" style="text-align: center;">Loading...</p>
 
   <div style="width: 70%; margin: auto;" color="accent">
-    <ngx-dropzone (change)="onSelect($event)">
+    <ngx-dropzone (change)="onSelect($event)" color="warm">
       <ngx-dropzone-label>Choose or Drop your files here!</ngx-dropzone-label>
       <ngx-dropzone-preview *ngFor="let f of docs" [removable]="true" (removed)="onRemove(f)">
         <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>

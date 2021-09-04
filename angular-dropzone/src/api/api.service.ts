@@ -77,17 +77,6 @@ export class ApiService {
     .toPromise();
   }
 
-  public readDocument(entity:string, ids:any[], fields: {}) {
-    return this.http.get<any>(environment.backend_url+'/?get=documents_document', {params: {
-        entity: entity,
-        ids: JSON.stringify(ids),
-        fields: JSON.stringify(fields),
-        lang: environment.lang
-      }
-    })
-    .toPromise();
-  }
-
   /*
     All methods using API return a Promise object.
     They can ben invoked either by chaing .then() and .catch() methods, or with await prefix (assuming parent function is declared as async).
